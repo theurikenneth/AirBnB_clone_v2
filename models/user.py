@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """User Module
 
 This Module inherits from BaseModel class.
@@ -28,7 +27,7 @@ class User(BaseModel, Base):
     first_name = Column(String(128), nullable=True)
     last_name = Column(String(128), nullable=True)
 
-    place = relationship("Place", backref="user",
+    places = relationship("Place", backref="user",
                          cascade="all, delete-orphan")
     reviews = relationship("Review", backref="user",
                            cascade="all, delete-orphan")
