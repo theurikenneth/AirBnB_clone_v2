@@ -1,30 +1,37 @@
 #!/usr/bin/python3
 """
 module: class BaseModel
-creates new instance objects 
-
+creates new instance objects
 """
 import uuid
 from datetime import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 import models
+
+Base = declarative_base()
+
 
 class BaseModel():
     """
     BaseClass model
     """
 
+    id = Column(String(60), nullable=False, primary_key=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
     def __init__(self, *args, **kwargs):
-        
         """
         initializes all the instances with mapped with the attributes
         attributes:
             id = unique id for every instance
             created_at = the time of instance creation
-            updated_at = time of instance edit 
+            updated_at = time of instance edit
         """
         if kwargs:
             time_format = "%Y-%m-%dT%H:%M:%S.%f"
-            crt =  kwargs['created_at']
+            crt = kwargs['created_at']
             updt = kwargs['updated_at']
             self.created_at = datetime.strptime(crt, time_format)
             self.updated_at = datetime.strptime(updt, time_format)
@@ -39,13 +46,23 @@ class BaseModel():
             self.updated_at = datetime.utcnow()
             models.storage.new(self)
 
-
     def __str__(self):
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__)
+
+    def new(self, obj):
+        """And object to current database session"""
+        if obj is not None:
+            self.__session.add(obj)
 
     def save(self):
         self.updated_at = datetime.utcnow()
+        models.storage.new(self)
         models.storage.save()
+
+    def delete(self):
+        """Deletes the instance from models.storage """
+        models.storage.delete(self)
 
     def to_dict(self):
         dict = {key: value for key, value in self.__dict__.items()}

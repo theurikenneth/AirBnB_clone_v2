@@ -7,10 +7,12 @@ City Module contains the attributes to be assigned
 to the cities.
 """
 
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """City Class
 
     Attributes:
@@ -18,5 +20,8 @@ class City(BaseModel):
         name (str): The City name
 
     """
-    state_id = ''
-    name = ''
+    __tablename__ = "cities"
+    state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
+    name = Column(String(128), nullable=False)
+    places = relationship("Place", backref="cities",
+                          cascade="all, delete-orphan")
