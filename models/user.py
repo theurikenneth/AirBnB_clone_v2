@@ -7,10 +7,12 @@ User Module contains the user information.
 
 """
 
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from models.base_model import BaseModel
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """User Class
     Attributes:
         email (str): The User's email
@@ -18,7 +20,13 @@ class User(BaseModel):
         first_name (str): THe first name of the User
         last_name (str): The last name of the User
     """
-    email = ''
-    password = ''
-    first_name = ''
-    last_name = ''
+    __tablename__ = "users"
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128), nullable=True)
+    last_name = Column(String(128), nullable=True)
+
+    place = relationship("Place", backref="user",
+                         cascade="all, delete-orphan")
+    reviews = relationship("Review", backref="user",
+                           cascade="all, delete-orphan")
