@@ -21,9 +21,11 @@ class FileStorage:
 #        super().__init__()
 
    # @property
-    def all(self):
-        """ Returns the dictionary in __objects """
-        return (FileStorage.__objects)
+    def all(self, cls=None):
+        """ Returns the dictionary of models currently in storage """
+        if cls is None:
+            return self.__objects
+        return {k: v for k, v in self.__objects.items() if isinstance(v, cls)}
     
    # @new.setter
     def new(self, obj):
@@ -67,3 +69,12 @@ class FileStorage:
 
         except Exception as e:
             pass
+
+    def delete(self, obj=None):
+        """ Deletes an object from memory """
+        if obj is not None:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            try:
+                del self.__objects[key]
+            except KeyError:
+                pass
