@@ -7,9 +7,11 @@ User Module contains the user information.
 
 """
 
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel
+from models.place import Place
+from models.review import Review
 
 
 class User(BaseModel, Base):
